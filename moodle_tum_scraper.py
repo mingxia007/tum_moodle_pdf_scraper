@@ -26,24 +26,6 @@ DOCU_DIR = config.get('config', 'docu_dir')
 courses_strings = config.get('config', 'courses')
 COURSTITLEs = courses_strings.split(',')
 
-'''
-COURSTITLEs = [
-     "Betriebswirtschaftslehre 1",
-     "Cost Accounting",
-     "Cost Accounting: Exercise",
-     "Datenbanksysteme und moderne CPU-Architekturen",
-     "Discrete Probability Theory",
-     "Marketing",
-     "Einführung in die Theoretische Informatik",
-     "Einsatz und Realisierung von Datenbanksystemen",
-     "Fortgeschrittene Themen des Softwaretests",
-     "Grundlagen: Rechnernetze und Verteilte Systeme",
-     "Compilerbau I",
-     "Propositional and First-Order Predicate Logic",
-     "Einführung in die Softwaretechnik", #bug bei diesem cours!
-     ]
-'''
-
 
 def login(username, password):
 # Erstelle eine neue Instanz des Webdrivers (hier Chrome)
@@ -85,7 +67,6 @@ def get_doc_links(driver, course_title):
         By.XPATH,
         f'//a[contains(@title, "{course_title}")]'
     )   
-
     # Filtere nur die Elemente, die Text haben (nicht leer)
     visible = [
         el for el in matches
@@ -105,8 +86,6 @@ def get_doc_links(driver, course_title):
 #finde link to mod/resource, die unterlink to pdf
 # Alle Links mit "/mod/resource/" im href finden
     links = driver.find_elements(By.XPATH, '//a[contains(@href, "/mod/resource/")]')
-
-
 
 # Jetzt kannst du die Links extrahieren and in doc_links speichern
     resources = []
@@ -130,7 +109,6 @@ def get_doc_links(driver, course_title):
 
 def doc_download(driver, resources, target):
     session = requests.Session()
-
     #log files read
     try:
         with open(LOG_PATH, 'r') as lf:
@@ -194,6 +172,7 @@ for course_title in COURSTITLEs:
     os.makedirs(dir_path, exist_ok=True)
     resources = get_doc_links(driver, course_title)
     doc_download(driver, resources, dir_path)
+    print(f"\t{course_title.title()} fertig!")
     driver.back()
     time.sleep(4)
 
